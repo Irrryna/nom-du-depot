@@ -8,7 +8,6 @@ import {
 const sampleGoals = [
   "Faire les courses",
   "Aller à la salle de sport 3 fois par semaine",
-  "Monter à plus de 5000m d'altitude",
   "Acheter mon premier appartement",
   "Perdre 5 kgs",
   "Gagner en productivité",
@@ -21,21 +20,21 @@ const sampleGoals = [
 export default function App() {
   const [listeDesTaches, setListeDesTaches] = useState(sampleGoals);
   const [newTask, setNewTask] = useState('');
-  const [editIndex, setEditIndex] = useState(null);   // <- index en cours d’édition
-  const inputRef = useRef(null);                      // <- pour focus()
+  const [editIndex, setEditIndex] = useState(null);   // <- index mode édition
+  const inputRef = useRef(null);                      // <- focus input
 
-  /* ─────────────  SUPPRESSION  ───────────── */
+  /* ─────────────  DELETE  ───────────── */
   const handleDelete = (index) => {
     Alert.alert(
       "Supprimer cette tâche ?",
-      "Êtes-vous sûr de vouloir supprimer cette tâche ?",
+      "Vraiment supprimer cette tâche ?",
       [
-        { text: "Non", style: "cancel" },
+        { text: "NO", style: "cancel" },
         {
           text: "OK",
           onPress: () => {
             setListeDesTaches(listeDesTaches.filter((_, i) => i !== index));
-            // si on supprimait la tâche en cours d’édition
+            // suppression pendant l'édition
             if (editIndex === index) {
               setEditIndex(null);
               setNewTask('');
@@ -48,25 +47,25 @@ export default function App() {
 
   /* ─────────────  MISE EN ÉDITION  ───────────── */
   const handleEdit = (index) => {
-    setNewTask(listeDesTaches[index]); // pré-remplit le champ
+    setNewTask(listeDesTaches[index]); // <- chargement de tâche à modifier
     setEditIndex(index);
-    // petit délai pour laisser le clavier apparaître puis focus
+    //  timeout pour champs de saisi puis focus
     setTimeout(() => inputRef.current?.focus(), 50);
   };
 
-  /* ─────────────  AJOUT / MODIFICATION  ───────────── */
+  /* ─────────────  AJOUT / MODIF  ───────────── */
   const handleValidate = () => {
     const txt = newTask.trim();
     if (txt === '') return;
 
     if (editIndex !== null) {
-      // --- on MODIFIE la tâche ---
+      // ---  MODIF ---
       const updated = [...listeDesTaches];
       updated[editIndex] = txt;
       setListeDesTaches(updated);
       setEditIndex(null);
     } else {
-      // --- on AJOUTE une nouvelle tâche ---
+      // --- ADD NEW TASK ---
       setListeDesTaches([...listeDesTaches, txt]);
     }
     setNewTask('');
